@@ -1,0 +1,40 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.title {
+  font-size: 52px;
+  margin: 0;
+  padding: 0;
+}
+
+.description {
+  font-size: 18px;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.link {
+  font-size: 14px;
+  margin: 10px 0;
+  padding: 0;
+  text-decoration: none;
+  color: darkblue;
+}
+
+.link:hover {
+
+}
+
+.link:visited {
+
+}
