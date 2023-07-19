@@ -4,72 +4,67 @@ import {
   BarChart, XAxis, YAxis, Bar, Legend, ResponsiveContainer,
 } from 'recharts';
 
-import FilterContext from '../../context/filter-context';
+import Preloader from '../preloader';
 
-import { months } from '../../utils/months';
-import rawData from '../../mocks/products.json';
+import FilterContext from '../../context/filter-context';
+import { useQuery } from '../../hooks/use-query';
+import { months, bars, getNumber } from '../../utils';
 
 import style from './chart.module.css';
 
 export default function Chart() {
-  const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const navigate = useNavigate();
   const { filter } = useContext(FilterContext);
-  const axesX = [...new Array(12)].map((_, i) => (i + 1).toString());
-  const { products } = rawData;
+  const { products = [], error, isLoading } = useQuery({ url: 'products' });
+  const arr = products;
+
+  const filteredFactory = (a, i, key) => a.filter((item) => ((item.factory_id.toString() === key)
+    && (item.date?.split('/')[1] === (i + 1).toString())));
+
+  const splitedFactory = months.map((name, i) => ({
+    name, factory_1: filteredFactory(arr, i, '1'), factory_2: filteredFactory(arr, i, '2'),
+  }));
+
+  const filterProduct = (filterValue, product, key) => ((filterValue === key || filterValue === '0')
+    ? getNumber(product)
+    : 0);
 
   useMemo(() => {
-    const ds = axesX.map((x) => {
-      let arr1 = products.filter((item) => (item.factory_id === 1) && (item.date?.split('/')[1] === x));
-      let arr2 = products.filter((item) => (item.factory_id === 2) && (item.date?.split('/')[1] === x));
+    const result = splitedFactory.map((m) => ({
+      ...m,
+      factory_1: m.factory_1.reduce((a, i) => (a + filterProduct(filter.value, i.product1, '1')
+        + filterProduct(filter.value, i.product2, '2')), 0),
+      factory_2: m.factory_2.reduce((a, i) => (a + filterProduct(filter.value, i.product1, '1')
+        + filterProduct(filter.value, i.product2, '2')), 0),
+    }));
 
-      if (filter.value === '1') {
-        arr1 = arr1.map((c) => ({ ...c, product2: 0 }));
-        arr2 = arr2.map((c) => ({ ...c, product2: 0 }));
-      } else if (filter.value === '2') {
-        arr1 = arr1.map((c) => ({ ...c, product1: 0 }));
-        arr2 = arr2.map((c) => ({ ...c, product1: 0 }));
-      }
+    setData(result);
+  }, [filter, products.length]);
 
-      return {
-        month: x,
-        name: months[x],
-        factory_1:
-          arr1.reduce((a, i) => (a + !!Number(i.product1) ? i.product1 : 0))
-          + arr1.reduce((a, i) => (a + !!Number(i.product2) ? i.product2 : 0)),
-        factory_2:
-          arr2.reduce((a, i) => (a + !!Number(i.product1) ? i.product1 : 0))
-          + arr2.reduce((a, i) => (a + !!Number(i.product2) ? i.product2 : 0)),
-      };
-    });
-
-    setData(ds);
-  }, [filter]);
-
-  const onClick = (e, factory) => navigate(`details/${factory}/${e.month}`);
-
-  const bars = [
-    { dataKey: 'factory_1', fill: 'red', name: 'Фабрика A' },
-    { dataKey: 'factory_2', fill: 'blue', name: 'Фабрика B' },
-  ];
+  const onClick = (e, factory) => navigate(`details/${factory}/${months.findIndex((x) => e.name === x)}`);
 
   return (
     <div className={style.chart}>
-      <ResponsiveContainer width="100%" height="100%">
-        <BarChart data={data}>
-          {bars.map((props, i) => (
-            <Bar
-              {...props}
-              key={props.dataKey}
-              barSize={20}
-              onClick={(e) => onClick(e, i + 1)}
-            />
-          ))}
-          <XAxis dataKey="name" />
-          <YAxis />
-          <Legend />
-        </BarChart>
-      </ResponsiveContainer>
+      {isLoading
+        ? <Preloader />
+        : (
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              {bars.map((props, i) => (
+                <Bar
+                  {...props}
+                  key={props.dataKey}
+                  barSize={20}
+                  onClick={(e) => onClick(e, i + 1)}
+                />
+              ))}
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Legend />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
     </div>
   );
 }

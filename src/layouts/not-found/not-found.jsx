@@ -1,6 +1,6 @@
 import React from 'react';
-
 import { Link } from 'react-router-dom';
+
 import { Paths } from '../../utils/paths';
 
 import style from './not-found.module.css';

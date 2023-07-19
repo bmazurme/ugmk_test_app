@@ -6,7 +6,5 @@ import Chart from '../../components/chart';
 import style from './main.module.css';
 
 export default function Main() {
-  return (
-    <Container header child={<Chart />} />
-  );
+  return (<Container header child={<Chart />} />);
 }
