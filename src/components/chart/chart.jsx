@@ -13,7 +13,7 @@ import { months, bars, getNumber } from '../../utils';
 import style from './chart.module.css';
 
 const filteredFactory = (a, i, key) => a.filter((item) => ((item.factory_id.toString() === key)
-&& (item.date?.split('/')[1] === (i + 1).toString())));
+  && (item.date?.split('/')[1] === (i + 1).toString())));
 
 const filterProduct = (filterValue, product, key) => ((filterValue === key || filterValue === '0')
   ? getNumber(product)
