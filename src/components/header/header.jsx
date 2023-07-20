@@ -17,7 +17,7 @@ export default function Header() {
     setFilter(e);
   };
 
-  useEffect(() => setFilter(() => (value ? options[value] : options['0'])), []);
+  useEffect(() => setFilter(value ? options[value] : options['0']), []);
 
   return (
     <div className={style.header}>

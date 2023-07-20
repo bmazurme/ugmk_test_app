@@ -6,7 +6,7 @@ import FilterContext from '../../context/filter-context';
 
 import style from './container.module.css';
 
-export default function Container({ header, child }) {
+export default function Container({ header, children }) {
   const [filter, setFilter] = useState({ value: '0', label: 'Все продукты' });
   const providerValue = useMemo(() => ({ filter, setFilter }), [filter, setFilter]);
 
@@ -14,7 +14,7 @@ export default function Container({ header, child }) {
     <FilterContext.Provider value={providerValue}>
       <div className={style.container}>
         {header && <Header />}
-        {child}
+        {children}
       </div>
     </FilterContext.Provider>
   );

@@ -17,7 +17,6 @@ export default function ChartDetail() {
   const { products = [], error, isLoading } = useQuery({ url: 'products' });
   const filteredFactory = (a, i, key) => a.filter((item) => ((item.factory_id.toString() === key)
     && (item.date?.split('/')[1] === (i + 1).toString())));
-
   const splitedFactory = months.map((name, i) => ({
     name,
     factory_1: filteredFactory(products, i, '1'),

@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BarChart, XAxis, YAxis, Bar, Legend, ResponsiveContainer,
@@ -12,35 +12,37 @@ import { months, bars, getNumber } from '../../utils';
 
 import style from './chart.module.css';
 
+const filteredFactory = (a, i, key) => a.filter((item) => ((item.factory_id.toString() === key)
+&& (item.date?.split('/')[1] === (i + 1).toString())));
+
+const filterProduct = (filterValue, product, key) => ((filterValue === key || filterValue === '0')
+  ? getNumber(product)
+  : 0);
+
 export default function Chart() {
-  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const { filter } = useContext(FilterContext);
   const { products = [], error, isLoading } = useQuery({ url: 'products' });
-  const arr = products;
-
-  const filteredFactory = (a, i, key) => a.filter((item) => ((item.factory_id.toString() === key)
-    && (item.date?.split('/')[1] === (i + 1).toString())));
 
   const splitedFactory = months.map((name, i) => ({
-    name, factory_1: filteredFactory(arr, i, '1'), factory_2: filteredFactory(arr, i, '2'),
+    name,
+    factory_1: filteredFactory(products, i, '1'),
+    factory_2: filteredFactory(products, i, '2'),
   }));
 
-  const filterProduct = (filterValue, product, key) => ((filterValue === key || filterValue === '0')
-    ? getNumber(product)
-    : 0);
-
-  useMemo(() => {
-    const result = splitedFactory.map((m) => ({
+  const data = useMemo(
+    () => splitedFactory.map((m) => ({
       ...m,
-      factory_1: m.factory_1.reduce((a, i) => (a + filterProduct(filter.value, i.product1, '1')
+      factory_1: m.factory_1.reduce((a, i) => (a
+        + filterProduct(filter.value, i.product1, '1')
         + filterProduct(filter.value, i.product2, '2')), 0),
-      factory_2: m.factory_2.reduce((a, i) => (a + filterProduct(filter.value, i.product1, '1')
+      factory_2: m.factory_2.reduce((a, i) => (a
+        + filterProduct(filter.value, i.product1, '1')
         + filterProduct(filter.value, i.product2, '2')), 0),
-    }));
+    })),
 
-    setData(result);
-  }, [filter, products.length]);
+    [filter.value, products.length],
+  );
 
   const onClick = (e, factory) => navigate(`details/${factory}/${months.findIndex((x) => e.name === x)}`);
 
