@@ -1,0 +1,67 @@
+{
+  "name": "ugmk_test_app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "13.4.0",
+    "@testing-library/user-event": "13.5.0",
+    "cors": "2.8.5",
+    "csv-parse": "5.4.0",
+    "express": "4.18.2",
+    "express-rate-limit": "6.7.1",
+    "express-winston": "4.2.0",
+    "fs": "0.0.1-security",
+    "helmet": "7.0.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-error-boundary": "4.0.10",
+    "react-router-dom": "6.14.2",
+    "react-scripts": "5.0.1",
+    "react-select": "5.7.4",
+    "recharts": "2.7.2",
+    "web-vitals": "2.1.4",
+    "winston": "3.10.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "clear": "rm -rf build/",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "eslint": "npx eslint ./src",
+    "start-json-server": "json-server --watch ./src/mocks/products.json --port 3001",
+    "start-server": "node ./src/server/index.js",
+    "dockerize": "docker build -t ugmk_test_app .",
+    "start-container": "docker run --rm -it -p 3000:3000 -p 3001:3001 --name ugmk_test_app ugmk_test_app"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "7.22.9",
+    "eslint": "8.45.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "json-server": "0.17.3"
+  }
+}
