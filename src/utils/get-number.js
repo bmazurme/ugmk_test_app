@@ -1,3 +1,3 @@
-const getNumber = (it) => (Number(it) ? Number(it) : 0);
+const getNumber = (it, unit = 1) => Math.round((Number(it) ? Number(it) * unit : 0));
 
 export { getNumber };
